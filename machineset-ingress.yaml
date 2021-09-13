@@ -1,0 +1,47 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  annotations:
+    machine.openshift.io/memoryMb: "8192"
+    machine.openshift.io/vCPU: "2"
+  labels:
+    machine.openshift.io/cluster-api-cluster: ocp-gwc6d
+  name: ocp-gwc6d-worker-ingress
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: ocp-gwc6d
+      machine.openshift.io/cluster-api-machineset: ocp-gwc6d-worker-ingress
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: ocp-gwc6d
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+        machine.openshift.io/cluster-api-machineset: ocp-gwc6d-worker-ingress
+        ingress2: "true"
+    spec:
+      providerSpec:
+        value:
+          apiVersion: vsphereprovider.openshift.io/v1beta1
+          credentialsSecret:
+            name: vsphere-cloud-credentials
+          diskGiB: 120
+          kind: VSphereMachineProviderSpec
+          memoryMiB: 8192
+          network:
+            devices:
+            - networkName: vm_net_isolated2
+          numCPUs: 2
+          numCoresPerSocket: 1
+          template: ocp-gwc6d-rhcos
+          userDataSecret:
+            name: worker-user-data
+          workspace:
+            datacenter: ric1
+            datastore: datastore1
+            folder: /ric1/vm/ocp-gwc6d
+            resourcePool: /ric1/host/Cluster01/Resources
+            server: vcenter.vmw.rhtrva.internal
