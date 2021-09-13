@@ -1,0 +1,17 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: ingress2
+  namespace: openshift-ingress-operator
+spec:
+  domain: lab.rhtrva.internal
+  nodePlacement:
+    nodeSelector:
+      matchLabels:
+        ingress2: "true"
+  routeSelector:
+    matchLabels:
+      type: sharded
+  replicas: 1
+  routeAdmission:
+    namespaceOwnership: InterNamespaceAllowed
