@@ -6,7 +6,7 @@ items:
     name: cluster
   spec:
     logLevel: Normal
-    managementState: Removed
+    managementState: managed
     observedConfig: null
     operatorLogLevel: Normal
     proxy: {}
