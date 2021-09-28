@@ -18,5 +18,5 @@ items:
         maxWaitInQueue: 0s
     rolloutStrategy: RollingUpdate
     storage:
-      EmptyDir: {}
+      emptyDir: {}
     unsupportedConfigOverrides: null
