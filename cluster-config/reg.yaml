@@ -5,7 +5,7 @@ metadata:
   namespace: openshift-config
 spec:
   logLevel: Normal
-  managementState: managed
+  managementState: Managed
   observedConfig: null
   operatorLogLevel: Normal
   proxy: {}
