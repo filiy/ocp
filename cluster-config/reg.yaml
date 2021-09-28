@@ -3,13 +3,7 @@ items:
 - apiVersion: imageregistry.operator.openshift.io/v1
   kind: Config
   metadata:
-    creationTimestamp: "2021-09-28T00:13:05Z"
-    finalizers:
-    - imageregistry.operator.openshift.io/finalizer
-    generation: 1
     name: cluster
-    resourceVersion: "501038"
-    uid: 6fc1d376-0251-4ef9-bfb3-0f10176c29fb
   spec:
     logLevel: Normal
     managementState: Removed
@@ -23,5 +17,6 @@ items:
       write:
         maxWaitInQueue: 0s
     rolloutStrategy: RollingUpdate
-    storage: {}
+    storage:
+      EmptyDir: {}
     unsupportedConfigOverrides: null
