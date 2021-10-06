@@ -162,7 +162,6 @@ rules:
     apiGroups:
       - ''
     resources:
-      - secrets
       - serviceaccounts
   - verbs:
       - create
@@ -222,7 +221,6 @@ rules:
       - pods/exec
       - pods/portforward
       - pods/proxy
-      - secrets
       - services/proxy
   - verbs:
       - impersonate
@@ -258,7 +256,6 @@ rules:
       - persistentvolumeclaims
       - replicationcontrollers
       - replicationcontrollers/scale
-      - secrets
       - serviceaccounts
       - services
       - services/proxy
