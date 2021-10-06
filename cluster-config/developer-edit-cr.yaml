@@ -4,7 +4,6 @@ metadata:
   name: developer-edit
 rules:
   - verbs:
-      - get
       - list
     apiGroups:
       - ''
