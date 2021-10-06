@@ -4,12 +4,6 @@ metadata:
   name: developer-edit
 rules:
   - verbs:
-      - list
-    apiGroups:
-      - ''
-    resources:
-      - secrets
-  - verbs:
       - create
       - update
       - patch
