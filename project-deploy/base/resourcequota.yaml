@@ -1,0 +1,15 @@
+---
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+  name: quota
+spec:
+  hard:
+    limits.cpu: 4
+    limits.memory: 8Gi
+    pods: 20
+    requests.cpu: 2
+    requests.memory: 4Gi
+    persistentvolumeclaims: 10
+    secrets: 20
+    services: 20

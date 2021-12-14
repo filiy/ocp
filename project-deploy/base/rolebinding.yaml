@@ -1,20 +1,11 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: app1-dev
-  labels:
-    companycode: 1234
-    environmenttype: dev
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: app1-dev-stephane-admin
-  namespace: app1-dev
+  name: admin
 subjects:
 - kind: User
-  name: stephane
+  name: admin
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
@@ -24,11 +15,10 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: app1-dev-dominique-edit
-  namespace: app1-dev
+  name: edit
 subjects:
 - kind: User
-  name: dominique
+  name: edit
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
@@ -38,11 +28,10 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: app1-dev-phil-view
-  namespace: app1-dev
+  name: view
 subjects:
 - kind: User
-  name: phil
+  name: view
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
