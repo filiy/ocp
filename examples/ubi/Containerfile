@@ -1,0 +1,7 @@
+FROM registry.access.redhat.com/ubi8-minimal:8.5
+
+MAINTAINER Phil Thomson <pthomson@redhat.com>
+
+RUN yum -y install cups
+
+CMD ["/usr/sbin/cupsd", "-f"]
