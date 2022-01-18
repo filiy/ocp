@@ -2,6 +2,9 @@ FROM registry.access.redhat.com/ubi8-minimal:8.5
 
 MAINTAINER Phil Thomson <pthomson@redhat.com>
 
-RUN yum -y install cups
+RUN yum -y install cups httpd
+
+EXPOSE 631
+EXPOSE 80
 
 CMD ["/usr/sbin/cupsd", "-f"]
