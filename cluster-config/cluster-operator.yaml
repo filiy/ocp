@@ -43,6 +43,10 @@ rules:
       - get
       - list
       - watch
+      - create
+      - update
+      - patch
+      - delete
     apiGroups:
       - ''
     resources:
@@ -633,14 +637,10 @@ rules:
       - get
       - list
       - watch
-    apiGroups:
-      - ''
-    resources:
-      - namespaces
-  - verbs:
-      - get
-      - list
-      - watch
+      - patch
+      - delete
+      - create
+      - update
     apiGroups:
       - apps
     resources:
