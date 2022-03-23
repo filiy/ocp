@@ -31,6 +31,10 @@ spec:
                   name: openshift-gitops-operator
                   source: redhat-operators
                   sourceNamespace: openshift-marketplace
+                  config:
+                    env:
+                      - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
+                        value: "true"
 ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
