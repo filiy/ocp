@@ -29,7 +29,8 @@ spec:
                   channel: stable
                   installPlanApproval: Automatic
                   name: openshift-gitops-operator
-                  source: redhat-operators
+                  #source: redhat-operators
+                  source: do480-catalog
                   sourceNamespace: openshift-marketplace
                   config:
                     env:
