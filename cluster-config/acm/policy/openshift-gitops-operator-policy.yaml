@@ -2,11 +2,9 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-gitops-operator
-  namespace: policy-openshift-gitops-operator
+  namespace: acm-policy
   annotations:
-    policy.open-cluster-management.io/standards: DevOps
-    policy.open-cluster-management.io/categories: GitOps
-    policy.open-cluster-management.io/controls: Argo CD Operator
+    policy.open-cluster-management.io/categories: operator
 spec:
   remediationAction: enforce
   disabled: false
@@ -42,7 +40,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: binding-policy-gitops-operator
-  namespace: policy-openshift-gitops-operator
+  namespace: acm-policy
 placementRef:
   name: placement-policy-gitops-operator
   kind: PlacementRule
@@ -56,14 +54,14 @@ apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
   name: placement-policy-gitops-operator
-  namespace: policy-openshift-gitops-operator
+  namespace: acm-policy
 spec:
   clusterConditions:
     - status: 'True'
       type: ManagedClusterConditionAvailable
   clusterSelector:
     matchExpressions:
-      - key: devops-tools
+      - key: gitops-operator
         operator: In
         values:
           - "true"
