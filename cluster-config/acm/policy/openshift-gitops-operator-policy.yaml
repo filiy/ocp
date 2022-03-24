@@ -32,10 +32,10 @@ spec:
                   #source: redhat-operators
                   source: do480-catalog
                   sourceNamespace: openshift-marketplace
-                  config:
-                    env:
-                      - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
-                        value: "true"
+                 # config:
+                 #   env:
+                 #     - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
+                 #       value: "true"
 ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
