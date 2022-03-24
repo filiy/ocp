@@ -7,7 +7,7 @@ metadata:
     policy.open-cluster-management.io/categories: operator
 spec:
   remediationAction: enforce
-  disabled: false
+  disabled: true
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
