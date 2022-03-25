@@ -113,4 +113,5 @@ spec:
     matchExpressions:
       - key: vendor
         operator: In
-        values:
+        values: 
+        - "OpenShift"
