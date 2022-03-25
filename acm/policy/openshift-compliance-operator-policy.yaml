@@ -104,7 +104,7 @@ apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
   name: placement-policy-compliance-operator
-  namespace: policy-openshift-compliance-operator
+  namespace: acm-policy
 spec:
   clusterConditions:
     - status: 'True'
