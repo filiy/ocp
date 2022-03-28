@@ -1,0 +1,74 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-ocpadmin-group-binding
+  namespace: acm-policy
+  annotations:
+    policy.open-cluster-management.io/categories: Access Control
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-ocpadmin-group-binding
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:   
+            - complianceType: musthave
+              objectDefinition:
+                kind: Group
+                apiVersion: user.openshift.io/v1
+                metadata:
+                  name: ocp-admins
+                users:
+                  - bob
+                  - tim
+                  - tom
+            - complianceType: musthave
+              objectDefinition:
+                kind: ClusterRoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: ocp-admins-rb-cluster-admin
+                subjects:
+                  - kind: Group
+                    apiGroup: rbac.authorization.k8s.io
+                    name: ocp-admins
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: cluster-admin
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-policy-ocpadmin-group-binding
+  namespace: acm-policy
+placementRef:
+  name: placement-policy-ocpadmin-group-binding
+  kind: PlacementRule
+  apiGroup: apps.open-cluster-management.io
+subjects:
+  - name: policy-ocpadmin-group-binding
+    kind: Policy
+    apiGroup: policy.open-cluster-management.io
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-policy-ocpadmin-group-binding
+  namespace: acm-policy
+spec:
+  clusterConditions:
+    - status: 'True'
+      type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+      - key: ocp-admin-group
+        operator: In
+        values:
+          - "true"
