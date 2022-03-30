@@ -48,7 +48,7 @@ spec:
                 channel: latest
                 installPlanApproval: Automatic
                 name: rhacs-operator
-                source: redhat-operators
+                source: do480-catalog
                 sourceNamespace: openshift-marketplace
   - objectDefinition:
       apiVersion: policy.open-cluster-management.io/v1
