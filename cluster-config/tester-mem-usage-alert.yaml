@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: mem-usage-tester
-  namespace: tester
+  namespace: app1
 spec:
   groups:
   - name: mem-usage
