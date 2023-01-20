@@ -1,9 +1,12 @@
 apiVersion: operator.openshift.io/v1alpha1
 kind: ImageContentSourcePolicy
 metadata:
-  name: ubi8repo
+  name: quay-gitlab-runner
 spec:
   repositoryDigestMirrors:
   - mirrors:
     - quay.io/pthomson/gitlab-runner-operator
     source: registry.gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/gitlab-runner-operator
+  - mirrors:
+    - quay.io/pthomson/gitlab-runner-ocp
+    source: registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/gitlab-runner-ocp
