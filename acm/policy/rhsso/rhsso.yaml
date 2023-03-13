@@ -1,0 +1,93 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: install-rhsso
+  namespace: open-cluster-management
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhsso-operator-ns
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: rhsso
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhsso-operator-operator-group
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1
+                kind: OperatorGroup
+                metadata:
+                  name: sso
+                  namespace: rhsso
+                spec:
+                  targetNamespaces:
+                    - rhsso
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhsso-operator-subscription
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: Subscription
+                metadata:
+                  name: rhsso-operator
+                  namespace: rhsso
+                spec:
+                  channel: stable
+                  installPlanApproval: Manual
+                  name: rhsso-operator
+                  source: redhat-operators
+                  sourceNamespace: openshift-marketplace
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: local-cluster-binding-placement
+  namespace: open-cluster-management
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: local-cluster-binding
+        operator: In
+        values:
+          - "true"
+  clusterConditions: []
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: local-cluster-binding-placement
+  namespace: open-cluster-management
+placementRef:
+  name: local-cluster-binding-placement
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: install-rhsso
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
