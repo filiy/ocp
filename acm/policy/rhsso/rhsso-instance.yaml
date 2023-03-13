@@ -1,0 +1,45 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: install-rhsso-instance
+  namespace: open-cluster-management
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhsso-operator-ns
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                 apiVersion: keycloak.org/v1alpha1
+                 kind: Keycloak
+                 metadata:
+                   name: rhsso
+                   namespace: rhsso
+                   labels:
+                     app: rhsso
+                 spec:
+                   instances: 1
+                   externalAccess:
+                     enabled: true
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: install-rhsso-instance-binding-placement
+  namespace: open-cluster-management
+placementRef:
+  name: local-cluster-binding-placement
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: install-rhsso-instance
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
