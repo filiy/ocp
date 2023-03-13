@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: install-rhsso
+  name: install-rhsso-operator
   namespace: open-cluster-management
 spec:
   disabled: false
@@ -88,6 +88,6 @@ placementRef:
   apiGroup: apps.open-cluster-management.io
   kind: PlacementRule
 subjects:
-  - name: install-rhsso
+  - name: install-rhsso-operator
     apiGroup: policy.open-cluster-management.io
     kind: Policy
