@@ -29,6 +29,33 @@ spec:
                    instances: 1
                    externalAccess:
                      enabled: true
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rhsso-realm
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                 apiVersion: keycloak.org/v1alpha1
+                 kind: KeycloakRealm
+                 metadata:
+                   labels:
+                     app: openshift
+                   name: openshift-realm
+                   namespace: rhsso
+                 spec:
+                   realm:
+                     id: openshift
+                     realm: openshift
+                     enabled: true
+                     displayName: Openshift Authentication Realm
+                   instanceSelector:
+                     matchLabels:
+                       app: rhsso
 ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
