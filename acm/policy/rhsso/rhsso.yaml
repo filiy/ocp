@@ -72,7 +72,7 @@ metadata:
 spec:
   clusterSelector:
     matchExpressions:
-      - key: local-cluster-binding
+      - key: local-cluster
         operator: In
         values:
           - "true"
