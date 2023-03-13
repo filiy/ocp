@@ -81,7 +81,7 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: local-cluster-binding-placement
+  name: install-rhsso-operator-binding-placement
   namespace: open-cluster-management
 placementRef:
   name: local-cluster-binding-placement
