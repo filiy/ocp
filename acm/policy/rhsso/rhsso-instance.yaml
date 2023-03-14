@@ -71,6 +71,7 @@ spec:
                  kind: KeycloakClient
                  metadata:
                    name: openshift-client
+                   namespace: rhsso
                    labels:
                      app: rhsso
                  spec:
