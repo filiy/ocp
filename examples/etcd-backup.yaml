@@ -41,6 +41,19 @@ roleRef:
   kind: ClusterRole
   name: cluster-etcd-backup
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: etcd-backup
+  namespace: ocp-etcd-backup
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 5Gi
+---
 kind: CronJob
 apiVersion: batch/v1
 metadata:
@@ -49,7 +62,7 @@ metadata:
   labels:
     app: openshift-backup
 spec:
-  schedule: "* * * * *"
+  schedule: "0 * * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
@@ -64,13 +77,23 @@ spec:
           labels:
             app: openshift-backup
         spec:
+          volumes:
+            - name: backups
+              persistentVolumeClaim: 
+                claimName: etcd-backup
           containers:
             - name: backup
+              env:
+                - name: MASTER_HOSTNAME
+                  value: ip-10-0-131-201.us-east-2.compute.internal
               image: "registry.redhat.io/openshift4/ose-cli"
+              volumeMounts:
+                - mountPath: "/backups"
+                  name: backups
               command:
                 - "/bin/bash"
                 - "-c"
-                - oc get no -l node-role.kubernetes.io/master --no-headers -o name | head -n 1 |xargs -I {} -- oc debug {}  --to-namespace=ocp-etcd-backup -- bash -c 'chroot /host rm -rf /home/core/backup && chroot /host  mkdir /home/core/backup && chroot /host  sudo -E  mount -t nfs <nfs-server-IP>:<shared-path>    /home/core/backup && chroot /host sudo -E /usr/local/bin/cluster-backup.sh /home/core/backup && chroot /host sudo -E find /home/core/backup/ -type f -mmin +"1" -delete'
+                - oc debug node/$MASTER_HOSTNAME --to-namespace=ocp-etcd-backup -- bash -c 'chroot /host rm -rf /home/core/backup && chroot /host sudo -E /usr/local/bin/cluster-backup.sh /home/core/backup && chroot /host sudo -E tar -czf /backups/backup_$(date +%Y-%m-%d_%H-%Z).tar.gz /home/core/backup/ && chroot /host sudo -E find /backups/ -type f -mmin +"1440" -delete'
           restartPolicy: "Never"
           terminationGracePeriodSeconds: 30
           activeDeadlineSeconds: 500
