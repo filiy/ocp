@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: old-pod-deploy
+spec:
+  selector:
+    matchLabels:
+      app: old-pod-deploy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: old-pod-deploy
+    spec:
+      containers:
+        - name: container
+          image: 'registry.redhat.io/openshift4/ose-cli:v4.5'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env: []
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do echo hello; sleep 2;done"]
+      imagePullSecrets: []
+  strategy:
+    type: Recreate
+  paused: false
