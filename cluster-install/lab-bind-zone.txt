@@ -1,0 +1,22 @@
+$TTL 1W
+@	IN	SOA	ns1.lab-cluster.local.	root (
+			2019070700	; serial
+			3H		; refresh (3 hours)
+			30M		; retry (30 minutes)
+			2W		; expiry (2 weeks)
+			1W )		; minimum (1 week)
+	IN	NS	ns1.lab-cluster.local.
+;
+;
+ns1.lab-cluster.local.		IN	A	192.168.165.10
+;
+api.ocp4.lab-cluster.local.		IN	A	192.168.165.10 
+api-int.ocp4.lab-cluster.local.	IN	A	192.168.165.10 
+;
+*.apps.ocp4.lab-cluster.local.	IN	A	192.168.165.10
+;
+metal-host1.ocp4.lab-cluster.local.	IN	A	192.168.165.221 
+metal-host2.ocp4.lab-cluster.local.	IN	A	192.168.165.222
+metal-host3.ocp4.lab-cluster.local.	IN	A	192.168.165.223 
+;
+;EOF
