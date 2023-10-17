@@ -5,49 +5,8 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
-  creationTimestamp: '2023-10-17T15:01:37Z'
-  generation: 28
-  managedFields:
-    - apiVersion: policy.open-cluster-management.io/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          'f:remediationAction': {}
-      manager: unknown
-      operation: Update
-      time: '2023-10-17T16:58:36Z'
-    - apiVersion: policy.open-cluster-management.io/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:annotations':
-            .: {}
-            'f:policy.open-cluster-management.io/categories': {}
-            'f:policy.open-cluster-management.io/controls': {}
-            'f:policy.open-cluster-management.io/standards': {}
-        'f:spec':
-          .: {}
-          'f:disabled': {}
-          'f:policy-templates': {}
-      manager: Mozilla
-      operation: Update
-      time: '2023-10-17T18:09:39Z'
-    - apiVersion: policy.open-cluster-management.io/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:status':
-          .: {}
-          'f:compliant': {}
-          'f:placement': {}
-          'f:status': {}
-      manager: governance-policy-propagator
-      operation: Update
-      subresource: status
-      time: '2023-10-17T18:09:57Z'
   name: acs-sensor
   namespace: open-cluster-management
-  resourceVersion: '10638403'
-  uid: 81a7396e-d36a-44da-ac54-b141e74762fd
 spec:
   disabled: false
   policy-templates:
@@ -206,12 +165,3 @@ spec:
           remediationAction: inform
           severity: high
   remediationAction: enforce
-status:
-  compliant: Compliant
-  placement:
-    - placementBinding: binding-acs-sensor
-      placementRule: placement-acs-sensor
-  status:
-    - clustername: local-cluster
-      clusternamespace: local-cluster
-      compliant: Compliant
