@@ -23,7 +23,7 @@ spec:
                 kind: Namespace
                 metadata:
                   name: stackrox
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -45,7 +45,7 @@ spec:
                   name: rhacs-operator
                   source: redhat-operators
                   sourceNamespace: openshift-marketplace
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -153,15 +153,15 @@ spec:
                   auditLogs:
                     collection: Auto
                   centralEndpoint: |
-                    {{ fromSecret "stackrox" "sensor-tls" "acs-host" }}
+                    {{ fromSecret "stackrox" "sensor-tls" "acs-host" | base64dec }}
                   clusterName: >
                     {{ fromSecret "open-cluster-management-agent"
-                    "hub-kubeconfig-secret" "cluster-name" }}
+                    "hub-kubeconfig-secret" "cluster-name" | base64dec }}
                   perNode:
                     collector:
                       collection: KernelModule
                       imageFlavor: Regular
                     taintToleration: TolerateTaints
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
   remediationAction: enforce
