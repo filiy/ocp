@@ -1,0 +1,11 @@
+[connection]
+id=ens224
+type=ethernet
+interface-name=ens224
+master=bond0
+slave-type=bond
+autoconnect=true
+autoconnect-priority=20
+
+[ethernet]
+mtu=9000
