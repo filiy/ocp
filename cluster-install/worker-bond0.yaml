@@ -1,0 +1,27 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 11-worker-bond0
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+      - contents:
+          source: data:;base64,W2Nvbm5lY3Rpb25dCmlkPWJvbmQwCnR5cGU9Ym9uZAppbnRlcmZhY2UtbmFtZT1ib25kMAphdXRvY29ubmVjdD10cnVlCmNvbm5lY3Rpb24uYXV0b2Nvbm5lY3Qtc2xhdmVzPTEKYXV0b2Nvbm5lY3QtcHJpb3JpdHk9MjAKCltldGhlcm5ldF0KbXR1PTkwMDAKCltib25kXQptb2RlPTgwMi4zYWQKbWlpbW9uPTEwMApsYWNwX3JhdGU9MQp4bWl0X2hhc2hfcG9saWN5PSJsYXllcjMrNCIKCltpcHY0XQptZXRob2Q9YXV0bwoKW2lwdjZdCm1ldGhvZD1hdXRvCg==
+        path: /etc/NetworkManager/system-connections/bond0.nmconnection
+        filesystem: root
+        mode: 0600
+      - contents:
+          source: data:;base64,W2Nvbm5lY3Rpb25dCmlkPWVubzEKdHlwZT1ldGhlcm5ldAppbnRlcmZhY2UtbmFtZT1lbm8xCm1hc3Rlcj1ib25kMApzbGF2ZS10eXBlPWJvbmQKYXV0b2Nvbm5lY3Q9dHJ1ZQphdXRvY29ubmVjdC1wcmlvcml0eT0yMAoKW2V0aGVybmV0XQptdHU9OTAwMAo=
+        path: /etc/NetworkManager/system-connections/eno1.nmconnection
+        filesystem: root
+        mode: 0600
+      - contents:
+          source: data:;base64,W2Nvbm5lY3Rpb25dCmlkPWVubzIKdHlwZT1ldGhlcm5ldAppbnRlcmZhY2UtbmFtZT1lbm8yCm1hc3Rlcj1ib25kMApzbGF2ZS10eXBlPWJvbmQKYXV0b2Nvbm5lY3Q9dHJ1ZQphdXRvY29ubmVjdC1wcmlvcml0eT0yMAoKW2V0aGVybmV0XQptdHU9OTAwMAo=
+        path: /etc/NetworkManager/system-connections/eno2.nmconnection
+        filesystem: root
+        mode: 0600
