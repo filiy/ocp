@@ -1,0 +1,32 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-dhcp-bond-mac
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+      - contents:
+          source:  data:;base64,IyEvdXNyL2Jpbi9iYXNoCmNhdCA8PEVPRiA+IC9ldGMvTmV0d29ya01hbmFnZXIvY29uZi5kLzk5LWJvbmQtbWFjLmNvbmYKW2Nvbm5lY3Rpb24tYm9uZDBdCm1hdGNoLWRldmljZT1pbnRlcmZhY2UtbmFtZTpib25kMApldGhlcm5ldC5jbG9uZWQtbWFjLWFkZHJlc3M9JChpcCAtaiBsaW5rIHNob3cgZGV2IGVuczE5MiB8IGpxIC1yIC5bMF0uYWRkcmVzcykKRU9GCg==
+        filesystem: root
+        mode: 493
+        path: /usr/local/bin/set-bond-mac.sh
+    systemd:
+      units:
+      - enabled: true
+        name: set-bond-mac.service
+        contents: |-
+          [Unit]
+          Description=Set DHCP client-id for bond0
+          Before=network-online.target kubelet.service crio.service NetworkManager.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/bin/set-bond-mac.sh
+
+          [Install]
+          WantedBy=network-online.target
