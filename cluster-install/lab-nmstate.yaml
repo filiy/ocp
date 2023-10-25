@@ -1,0 +1,101 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: vm-metal-lab-metal01
+  namespace: vm-metal-lab
+  labels:
+    infraenvs.agent-install.openshift.io: vm-metal-lab
+spec:
+  config:
+    interfaces:
+      - name: ens192
+        type: ethernet
+        state: up
+        mac-address: 00:50:56:a2:34:4a
+        ipv4:
+          enabled: true
+          address:
+            - ip: 192.168.165.221
+              prefix-length: 24
+          dhcp: false
+    dns-resolver:
+      config:
+        server:
+          - 192.168.165.10
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: 192.168.165.1
+          next-hop-interface: ens192
+          table-id: 254
+  interfaces:
+    - name: "ens192"
+      macAddress: "00:50:56:a2:34:4a"
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: vm-metal-lab-metal02
+  namespace: vm-metal-lab
+  labels:
+    infraenvs.agent-install.openshift.io: vm-metal-lab
+spec:
+  config:
+    interfaces:
+      - name: ens192
+        type: ethernet
+        state: up
+        mac-address: 00:50:56:a2:09:e1
+        ipv4:
+          enabled: true
+          address:
+            - ip: 192.168.165.222
+              prefix-length: 24
+          dhcp: false
+    dns-resolver:
+      config:
+        server:
+          - 192.168.165.10
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: 192.168.165.1
+          next-hop-interface: ens192
+          table-id: 254
+  interfaces:
+    - name: "ens192"
+      macAddress: "00:50:56:a2:09:e1"
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: vm-metal-lab-metal03
+  namespace: vm-metal-lab
+  labels:
+    infraenvs.agent-install.openshift.io: vm-metal-lab
+spec:
+  config:
+    interfaces:
+      - name: ens192
+        type: ethernet
+        state: up
+        mac-address: 00:50:56:a2:15:ba 
+        ipv4:
+          enabled: true
+          address:
+            - ip: 192.168.165.223
+              prefix-length: 24
+          dhcp: false
+    dns-resolver:
+      config:
+        server:
+          - 192.168.165.10
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: 192.168.165.1
+          next-hop-interface: ens192
+          table-id: 254
+  interfaces:
+    - name: "ens192"
+      macAddress: "00:50:56:a2:15:ba" 
