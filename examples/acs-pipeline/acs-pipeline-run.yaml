@@ -1,0 +1,32 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: rox-pipelinerun
+spec:
+  pipelineRef:
+    name: rox-example-pipeline
+  params:
+  - name: deployment
+    value: examples/apps/old-deploy/deployment.yaml
+
+  - name: git-url
+    value: https://github.com/filiy/ocp.git
+
+  - name: git-revision
+    value: main
+
+  - name: IMAGE
+    value: registry.redhat.io/openshift4/ose-cli:v4.5
+
+  - name: insecure-skip-tls-verify
+    value: "true"
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi

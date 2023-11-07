@@ -1,0 +1,94 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: rox-example-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  params:
+    - name: deployment
+      type: string
+      description: filename of the deployment to be patched
+
+    - name: git-url
+      type: string
+      description: url of the git repo for the code of deployment
+
+    - name: git-revision
+      type: string
+      description: revision to be used from repo of the code for deployment
+      default: main
+
+    - name: IMAGE
+      type: string
+      description: image to be build from the code
+  tasks:
+    # checkout source code
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      workspaces:
+      - name: output
+        workspace: shared-workspace
+      params:
+      - name: url
+        value: $(params.git-url)
+      - name: subdirectory
+        value: ""
+      - name: deleteExisting
+        value: "true"
+      - name: revision
+        value: $(params.git-revision)
+
+    # validate deployment against defined  RHACS policies
+    - name: check-deployment
+      taskRef:
+        name: rhacs-deployment-check
+        kind: Task
+      workspaces:
+      - name: source
+        workspace: shared-workspace
+      params:
+      - name: deployment
+        value: $(params.deployment)
+      - name: insecure-skip-tls-verify
+        value: "true"
+      runAfter:
+      - fetch-repository
+
+    - name: check-image
+      taskRef:
+        name: rhacs-image-check
+        kind: Task
+      params:
+      - name: image
+        value: $(params.IMAGE)
+      - name: insecure-skip-tls-verify
+        value: "true"
+      runAfter:
+      - check-deployment
+
+      # scan image for vulns using RHACS
+    - name: scan-image
+      taskRef:
+        name: rhacs-image-scan
+        kind: Task
+      params:
+      - name: image
+        value: $(params.IMAGE)
+      - name: insecure-skip-tls-verify
+        value: "true"
+      runAfter:
+      - check-image
+
+    # Deployment Phase
+    - name: deployment
+      runAfter:
+        - scan-image
+      taskRef:
+        kind: Task
+        name: deploy
+      workspaces:
+        - name: source
+          workspace: shared-workspace
