@@ -6,3 +6,13 @@ namespace: app1-staging
 nameSuffix: "-staging"
 commonLabels:
   environment: staging
+patches:
+  - patch: |-
+      kind: ResourceQuota
+      apiVersion: v1
+      metadata:
+        name: quota
+      spec:
+        hard:
+          limits.cpu: 6
+          limits.memory: '12Gi'
