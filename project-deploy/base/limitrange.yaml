@@ -3,6 +3,7 @@ kind: LimitRange
 apiVersion: v1
 metadata:
   name: default-limit-range
+  namespace: app1
 spec:
   limits:
   - default:
