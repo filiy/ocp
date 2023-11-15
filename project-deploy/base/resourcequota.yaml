@@ -3,7 +3,6 @@ kind: ResourceQuota
 apiVersion: v1
 metadata:
   name: quota
-  namespace: app1
 spec:
   hard:
     limits.cpu: 4

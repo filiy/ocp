@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: admin
-  namespace: app1
 subjects:
 - kind: User
   name: admin
@@ -17,7 +16,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: edit
-  namespace: app1
 subjects:
 - kind: User
   name: edit
@@ -31,7 +29,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: view
-  namespace: app1
 subjects:
 - kind: User
   name: view
