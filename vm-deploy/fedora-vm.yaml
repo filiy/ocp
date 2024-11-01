@@ -4,6 +4,7 @@ metadata:
   labels:
     app: vm-test 
   name: vm-test
+  namespace: vms
 spec:
   dataVolumeTemplates:
   - apiVersion: cdi.kubevirt.io/v1beta1
