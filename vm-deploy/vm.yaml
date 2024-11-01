@@ -7,7 +7,7 @@ metadata:
   labels:
     app: example
     os.template.kubevirt.io/fedora: 'true'
-  namespace: default
+  namespace: vms
 spec:
   running: false
   template:
