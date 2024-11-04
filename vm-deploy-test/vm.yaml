@@ -52,8 +52,7 @@ spec:
   resources:
     requests:
       storage: 20Gi
-  storageClassName: ocs-external-storage
-  cluster-ceph-rbd
+  storageClassName: ocs-storagecluster-ceph-rbd-virtualization
   volumeMode: Block
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
