@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-config
+  namespace: openshift-gitops
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/filiy/ocp
+        revision: HEAD 
+        directories:
+          # This tells the generator to look for all subdirectories within 'cluster-config'
+          - path: cluster-config/*
+  template:
+    metadata:
+      # Use the subdirectory name (basename) to create a unique and descriptive application name
+      name: 'cluster-config-{{path.basename}}'
+      labels:
+        # Optional: Add a label for easy filtering
+        appset: cluster-config
+    spec:
+      project: default # Assign to the 'default' ArgoCD project
+      source:
+        repoURL: https://github.com/filiy/ocp
+        targetRevision: HEAD
+        # '{{path}}' is the full path found by the generator (e.g., cluster-config/kube-apiserver)
+        path: '{{path}}' 
+      destination:
+        server: https://kubernetes.default.svc 
+        namespace: default # The namespace where the Kubernetes resources should be installed
+      # Sync Policy is MANUAL (no 'automated' block)
+      syncPolicy:
+        # Optional: Allow ArgoCD to create the target namespace if it doesn't exist
+        syncOptions:
+          - CreateNamespace=true
