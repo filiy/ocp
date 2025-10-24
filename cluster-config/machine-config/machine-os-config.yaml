@@ -1,0 +1,21 @@
+apiVersion: machineconfiguration.openshift.io/v1 
+kind: MachineOSConfig
+metadata:
+  name: test
+spec:
+  machineConfigPool:
+    name: test
+  containerFile: 
+  - containerfileArch: NoArch 
+    content: |-
+      FROM configs AS final
+      RUN dnf install -y cowsay && \
+        dnf clean all && \
+        ostree container commit
+  imageBuilder: 
+    imageBuilderType: Job
+  baseImagePullSecret: 
+    name: global-pull-secret-copy
+  renderedImagePushSpec: image-registry.openshift-image-registry.svc:5000/openshift/os-image:latest  
+  renderedImagePushSecret: 
+    name: builder-dockercfg-hwxjp
