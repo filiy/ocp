@@ -1,0 +1,28 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: inline-app-build
+  namespace: app1
+  labels:
+    app: inline-app
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'inline-app:latest'
+  strategy:
+    type: Docker
+    dockerStrategy: {}
+  postCommit: {}
+  source:
+    type: Dockerfile
+    dockerfile: |
+      FROM python:3.9-slim
+      WORKDIR /app
+      RUN apt-get update && apt-get install -y cowsay \
+          && apt-get clean \
+          && rm -rf /var/lib/apt/lists/*
+      EXPOSE 8080
+      CMD ["cowsay", "Hello, OpenShift!"]
+  triggers:
+    - type: ConfigChange

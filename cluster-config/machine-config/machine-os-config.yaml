@@ -1,21 +1,23 @@
 apiVersion: machineconfiguration.openshift.io/v1 
 kind: MachineOSConfig
 metadata:
-  name: test
+  name: master
 spec:
   machineConfigPool:
-    name: test
+    name: master
   containerFile: 
   - containerfileArch: NoArch 
     content: |-
       FROM configs AS final
-      RUN dnf install -y cowsay && \
-        dnf clean all && \
-        ostree container commit
+      RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+          dnf install -y htop && \
+          dnf install -y sl && \
+          dnf clean all && \
+          ostree container commit
   imageBuilder: 
     imageBuilderType: Job
   baseImagePullSecret: 
     name: global-pull-secret-copy
-  renderedImagePushSpec: image-registry.openshift-image-registry.svc:5000/openshift/os-image:latest  
+  renderedImagePushSpec: image-registry.openshift-image-registry.svc:5000/openshift-machine-config-operator/os-image:latest  
   renderedImagePushSecret: 
     name: builder-dockercfg-hwxjp
