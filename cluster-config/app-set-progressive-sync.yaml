@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-config-test
+  namespace: openshift-gitops
+spec:
+  generators:
+    - git:
+        directories:
+          - path: cluster-config-test/*
+        repoURL: 'https://github.com/filiy/ocp'
+        revision: HEAD
+  goTemplate: true
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: wave-key
+              operator: In
+              values: 
+                - "1-monitoring"
+        - matchExpressions:
+            - key: wave-key
+              operator: In
+              values: 
+                - "2-rbac"
+        - matchExpressions:
+            - key: wave-key
+              operator: In
+              values: 
+                - "3-templates"
+  template:
+    metadata:
+      labels:
+        appset: cluster-config
+        wave-key: '{{.path.basename}}'
+      name: 'cluster-config-{{.path.basename}}'
+    spec:
+      destination:
+        namespace: default
+        server: 'https://kubernetes.default.svc'
+      project: default
+      source:
+        path: '{{.path.path}}'
+        repoURL: 'https://github.com/filiy/ocp'
+        targetRevision: HEAD
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
