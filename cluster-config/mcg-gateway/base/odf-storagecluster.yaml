@@ -1,0 +1,29 @@
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+  name: ocs-storagecluster
+  namespace: openshift-storage
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  arbiter: {}
+  encryption:
+    keyRotation:
+      schedule: '@weekly'
+    kms: {}
+  externalStorage: {}
+  managedResources:
+    cephBlockPools: {}
+    cephCluster: {}
+    cephConfig: {}
+    cephDashboard: {}
+    cephFilesystems: {}
+    cephNonResilientPools: {}
+    cephObjectStoreUsers: {}
+    cephObjectStores: {}
+    cephRBDMirror: {}
+    cephToolbox: {}
+  multiCloudGateway:
+    dbStorageClassName: gp3-csi
+    reconcileStrategy: standalone
+  resourceProfile: balanced

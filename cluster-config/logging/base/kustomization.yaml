@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - clusterlogforwarder.yaml
+  - clusterrolebinding.yaml
+  - coo_namespace.yaml
+  - coo_operator_group.yaml
+  - coo_subscription.yaml
+  - coo_uiplugin.yaml
+  - loki_namespace.yaml
+  - loki_operator_group.yaml
+  - loki_subscription.yaml
+  - lokistack.yaml
+  - openshift-logging-namespace.yaml
+  - openshift-logging-operator_groups.yaml
+  - openshift-logging-subscriptions.yaml
+  - service_account.yaml
+  - obc.yaml

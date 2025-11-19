@@ -1,0 +1,50 @@
+apiVersion: observability.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: collector
+  namespace: openshift-logging
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  collector:
+    resources:
+      limits:
+        cpu: 6
+        memory: 8Gi
+      requests:
+        cpu: 2
+        memory: 2Gi
+  filters:
+  - drop:
+    - test:
+      - field: .level
+        matches: ^(info|debug|trace)$
+    name: drop-low-importance
+    type: drop
+  managementState: Managed
+  outputs:
+  - lokiStack:
+      authentication:
+        token:
+          from: serviceAccount
+      target:
+        name: logging-loki
+        namespace: openshift-logging
+    name: logging-loki
+    tls:
+      ca:
+        configMapName: openshift-service-ca.crt
+        key: service-ca.crt
+    type: lokiStack
+  pipelines:
+  - inputRefs:
+    - application
+    - infrastructure
+    - audit
+    name: logs-to-loki
+    outputRefs:
+    - logging-loki
+  - filterRefs:
+    - drop-low-importance
+  serviceAccount:
+    name: logging-collector

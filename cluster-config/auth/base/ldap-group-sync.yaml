@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ldaps-group-sync
+  namespace: ldaps-sync
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - command:
+            - /bin/oc
+            - adm
+            - groups
+            - sync
+            - --whitelist=/ldaps-sync/group-allowlist.txt
+            - --sync-config=/ldaps-sync/ldaps-sync.yaml
+            - --confirm
+            image: registry.redhat.io/openshift4/ose-cli
+            imagePullPolicy: Always
+            name: oc-cli
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /ldaps-sync
+              name: config
+              readOnly: true
+            - mountPath: /etc/pki/ca-trust/extracted/pem
+              name: ca-inject
+              readOnly: true
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: ldaps-sync
+          serviceAccountName: ldaps-sync
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: config
+            secret:
+              defaultMode: 420
+              secretName: ldaps-sync
+          - name: ca-inject
+            configMap:
+              defaultMode: 420
+              name: ca-inject
+              items:
+              - key: ca-bundle.crt
+                path: tls-ca-bundle.pem
+  schedule: 0 * * * *
+  successfulJobsHistoryLimit: 3
+  suspend: false

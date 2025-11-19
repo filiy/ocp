@@ -1,0 +1,24 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: br-vmdata
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  desiredState:
+    interfaces:
+    - bridge:
+        allow-extra-patch-ports: true
+        options:
+          stp: false
+        port:
+        - name: bond0
+      description: dedicated OVS bridge with bond0 as a port
+      name: br-vmdata
+      state: up
+      type: ovs-bridge
+    ovn:
+      bridge-mappings:
+      - bridge: br-vmdata
+        localnet: trunk-net
+        state: present

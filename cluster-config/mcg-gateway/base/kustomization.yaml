@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - odf-namespace.yaml
+  - odf-operatorgroups.yaml
+  - odf-subscriptions.yaml
+  - odf-storagecluster.yaml

@@ -1,0 +1,9 @@
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: vlan26
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "8"
+spec:
+  config: '{ "name":"vlan26", "type":"ovn-k8s-cni-overlay", "cniVersion":"0.4.0", "topology":"localnet", "physicalNetworkName":"vlan26-net", "netAttachDefName":"default/vlan26", "vlanID":26, "mtu":1500 }'

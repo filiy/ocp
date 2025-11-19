@@ -1,0 +1,11 @@
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: host1.lab.com
+  namespace: openshift-machine-api
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  bmc:
+    address: 'ipmi://1.2.2.1'
+    credentialsName: 'bmc-creds'

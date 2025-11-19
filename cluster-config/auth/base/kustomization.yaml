@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ldap-sync-ns.yaml
+  - ldap-inject-configmap.yaml
+  - ldap-group-sync.yaml
+  - crb.yaml
+  - sa.yaml
+  - cluster-operator-role.yaml
+  - developer-edit-cr.yaml
+  - ldap-sync-secret.yaml
