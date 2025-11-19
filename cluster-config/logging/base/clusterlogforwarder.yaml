@@ -37,11 +37,11 @@ spec:
         key: service-ca.crt
     type: lokiStack
   pipelines:
-  - inputRefs:
+  - name: logs-to-loki
+    inputRefs:
     - application
     - infrastructure
     - audit
-    name: logs-to-loki
     outputRefs:
     - logging-loki
   - filterRefs:

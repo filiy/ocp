@@ -19,3 +19,5 @@ spec:
       caKey: service-ca.crt
       caName: openshift-service-ca.crt
   storageClassName: gp3-csi
+  tenants:
+    mode: openshift-logging
