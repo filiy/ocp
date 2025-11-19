@@ -44,7 +44,7 @@ spec:
     - audit
     outputRefs:
     - logging-loki
-  - filterRefs:
+    filterRefs:
     - drop-low-importance
   serviceAccount:
     name: logging-collector
