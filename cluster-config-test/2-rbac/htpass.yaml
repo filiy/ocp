@@ -1,8 +1,0 @@
-kind: Secret
-apiVersion: v1
-metadata:
-  name: htpasswd-bgjcv
-  namespace: openshift-config
-data:
-  htpasswd: YWRtaW46JGFwcjEkV0ZYdjZYaHQkTm4uQ0t4c0pjTW9pNjIuTUZSUS9ZLwo=
-type: Opaque
