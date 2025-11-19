@@ -21,10 +21,10 @@ spec:
     spec:
       project: default # Assign to the 'default' ArgoCD project
       source:
-        repoURL: https://github.com/filiy/ocp
-        targetRevision: HEAD
-        # '{{path}}' is the full path found by the generator (e.g., cluster-config/kube-apiserver)
-        path: '{{path}}' 
+        kustomize: {}
+        path: '{{ path }}/overlays/lab'
+        repoURL: 'https://github.com/filiy/ocp.git'
+        targetRevision: main
       destination:
         server: https://kubernetes.default.svc 
         namespace: default # The namespace where the Kubernetes resources should be installed
