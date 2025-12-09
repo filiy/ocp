@@ -1,0 +1,17 @@
+# https://ovn-kubernetes.io/features/multiple-networks/multi-homing/
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: nad-localnet1
+  namespace: default
+spec:
+  config: |-
+    {
+        "cniVersion": "0.4.0",
+        "name": "localnet1",
+        "type": "ovn-k8s-cni-overlay",
+        "netAttachDefName": "default/nad-localnet1",
+        "topology": "localnet",
+        "physicalNetworkName": "localnet1",
+        "subnets": "202.10.130.112/28"
+    }
