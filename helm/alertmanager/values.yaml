@@ -22,7 +22,7 @@ alertmanagerConfig: |
     - name: Watchdog
     - name: Critical
       webhook_configs:
-        - url: 'https://test.com/webhook'
+        - url: 'https://tester.ca/webhook1'
   route:
     group_by:
       - namespace
