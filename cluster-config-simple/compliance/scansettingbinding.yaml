@@ -1,0 +1,15 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: ScanSettingBinding
+metadata:
+  name: nist-moderate
+  namespace: openshift-compliance
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+profiles:
+- apiGroup: compliance.openshift.io/v1alpha1
+  kind: Profile
+  name: rhcos4-moderate
+settingsRef:
+  apiGroup: compliance.openshift.io/v1alpha1
+  kind: ScanSetting
+  name: default
