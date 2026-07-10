@@ -1,0 +1,273 @@
+---
+- name: Initialize OpenShift Cluster - Deploy Operators and Configs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.14
+    # Connection variables
+    ocp_host: "https://api.cluster-9bfnj.9bfnj.sandbox1285.opentlc.com:6443"
+    ocp_username: "kubeadmin"
+    ocp_password: ""
+
+    # OpenShift Virtualization Vars
+    cnv_namespace: openshift-cnv
+    cnv_operator_channel: stable
+
+    # NMState Vars
+    nmstate_namespace: openshift-nmstate
+    nmstate_operator_channel: stable
+
+    # MTV Vars
+    mtv_namespace: openshift-mtv
+
+    # MachineSet Vars
+    machineset_replicas: 1
+    machineset_instance_type: m5zn.metal
+
+  module_defaults:
+    group/k8s:
+      host: "{{ ocp_host }}"
+      api_key: "{{ ocp_auth.k8s_auth.api_key | default(omit) }}"
+      validate_certs: false
+
+  tasks:
+    - name: Authenticate to OpenShift and get token
+      kubernetes.core.k8s_auth:
+        host: "{{ ocp_host }}"
+        username: "{{ ocp_username }}"
+        password: "{{ ocp_password }}"
+        validate_certs: false
+      register: ocp_auth
+
+    # =========================================================================
+    # 1. DEPLOY OPENSHIFT VIRTUALIZATION
+    # =========================================================================
+    - name: Create OpenShift Virtualization Namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ cnv_namespace }}"
+
+    - name: Create Virtualization OperatorGroup
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: openshift-cnv-operatorgroup
+            namespace: "{{ cnv_namespace }}"
+          spec:
+            targetNamespaces:
+              - "{{ cnv_namespace }}"
+
+    - name: Create Subscription for OpenShift Virtualization
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: kubevirt-hyperconverged
+            namespace: "{{ cnv_namespace }}"
+          spec:
+            channel: "{{ cnv_operator_channel }}"
+            installPlanApproval: Automatic
+            name: kubevirt-hyperconverged
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+    - name: Wait for the Virtualization Operator CSV to succeed
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion
+        namespace: "{{ cnv_namespace }}"
+      register: csv_info_cnv
+      retries: 30
+      delay: 15
+      until: 
+        - csv_info_cnv.resources is defined
+        - csv_info_cnv.resources | length > 0
+        - csv_info_cnv.resources | selectattr('metadata.name', 'match', '^kubevirt-hyperconverged') | list | length > 0
+        - (csv_info_cnv.resources | selectattr('metadata.name', 'match', '^kubevirt-hyperconverged') | first).status.phase | default('') == 'Succeeded'
+
+    - name: Create HyperConverged Custom Resource
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: hco.kubevirt.io/v1beta1
+          kind: HyperConverged
+          metadata:
+            name: kubevirt-hyperconverged
+            namespace: "{{ cnv_namespace }}"
+          spec: {}
+
+    # =========================================================================
+    # 2. DEPLOY KUBERNETES NMSTATE OPERATOR
+    # =========================================================================
+    - name: Create NMState Namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ nmstate_namespace }}"
+
+    - name: Create NMState OperatorGroup
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: openshift-nmstate-operatorgroup
+            namespace: "{{ nmstate_namespace }}"
+          spec:
+            targetNamespaces:
+              - "{{ nmstate_namespace }}"
+
+    - name: Create Subscription for NMState
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: kubernetes-nmstate-operator
+            namespace: "{{ nmstate_namespace }}"
+          spec:
+            channel: "{{ nmstate_operator_channel }}"
+            installPlanApproval: Automatic
+            name: kubernetes-nmstate-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+    - name: Wait for the NMState Operator CSV to succeed
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion
+        namespace: "{{ nmstate_namespace }}"
+      register: csv_info_nmstate
+      retries: 30
+      delay: 15
+      until: 
+        - csv_info_nmstate.resources is defined
+        - csv_info_nmstate.resources | length > 0
+        - csv_info_nmstate.resources | selectattr('metadata.name', 'match', '^kubernetes-nmstate-operator') | list | length > 0
+        - (csv_info_nmstate.resources | selectattr('metadata.name', 'match', '^kubernetes-nmstate-operator') | first).status.phase | default('') == 'Succeeded'
+
+    - name: Create NMState Custom Resource
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: nmstate.io/v1
+          kind: NMState
+          metadata:
+            name: nmstate
+          spec: {}
+
+    # =========================================================================
+    # 3. DEPLOY MIGRATION TOOLKIT FOR VIRTUALIZATION (MTV)
+    # =========================================================================
+    - name: Create MTV Namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ mtv_namespace }}"
+
+    - name: Create MTV OperatorGroup
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: openshift-mtv-operatorgroup
+            namespace: "{{ mtv_namespace }}"
+          spec:
+            targetNamespaces:
+              - "{{ mtv_namespace }}"
+
+    - name: Create Subscription for MTV
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: mtv-operator
+            namespace: "{{ mtv_namespace }}"
+          spec:
+            installPlanApproval: Automatic
+            name: mtv-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+    - name: Wait for the MTV Operator CSV to succeed
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion
+        namespace: "{{ mtv_namespace }}"
+      register: csv_info_mtv
+      retries: 30
+      delay: 15
+      until: 
+        - csv_info_mtv.resources is defined
+        - csv_info_mtv.resources | length > 0
+        - csv_info_mtv.resources | selectattr('metadata.name', 'match', '^mtv-operator') | list | length > 0
+        - (csv_info_mtv.resources | selectattr('metadata.name', 'match', '^mtv-operator') | first).status.phase | default('') == 'Succeeded'
+
+    - name: Create ForkliftController Custom Resource (MTV)
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: forklift.konveyor.io/v1beta1
+          kind: ForkliftController
+          metadata:
+            name: forklift-controller
+            namespace: "{{ mtv_namespace }}"
+          spec:
+            feature_ui_plugin: 'true'
+            feature_validation: 'true'
+            feature_volume_populator: 'true'
+
+    # =========================================================================
+    # 4. MODIFY MACHINESET
+    # =========================================================================
+    - name: Fetch existing MachineSet info
+      kubernetes.core.k8s_info:
+        api_version: machine.openshift.io/v1beta1
+        kind: MachineSet
+        namespace: openshift-machine-api
+      register: machineset_info
+
+    - name: Fail if no MachineSets are found
+      ansible.builtin.fail:
+        msg: "No MachineSets were found in the openshift-machine-api namespace."
+      when: machineset_info.resources | length == 0
+
+    - name: Update the instanceType and replicas on the MachineSet
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: machine.openshift.io/v1beta1
+          kind: MachineSet
+          metadata:
+            name: "{{ machineset_info.resources[0].metadata.name }}"
+            namespace: openshift-machine-api
+          spec:
+            replicas: "{{ machineset_replicas }}"
+            template:
+              spec:
+                providerSpec:
+                  value:
+                    instanceType: "{{ machineset_instance_type }}"
