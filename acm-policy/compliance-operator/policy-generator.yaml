@@ -11,9 +11,8 @@ policyDefaults:
           operator: In
           values:
             - "OpenShift"
-    vendor: OpenShift
 policies:
-  - name: install-compliance-operator.
+  - name: install-compliance-operator
     remediationAction: enforce 
     manifests:
       - path: manifests/
