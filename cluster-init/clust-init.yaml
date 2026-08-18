@@ -7,7 +7,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3.14
     # Connection variables
-    ocp_host: "https://api.cluster-9bfnj.9bfnj.sandbox1285.opentlc.com:6443"
+    ocp_host: "https://api.cluster-jr4vd.jr4vd.sandbox2106.opentlc.com:6443"
     ocp_username: "kubeadmin"
     ocp_password: ""
 
