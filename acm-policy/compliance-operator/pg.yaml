@@ -1,0 +1,19 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: compliance-operator
+policyDefaults:
+  namespace: acm-policies
+  placement:
+    labelSelector:
+      matchExpressions:
+        - key: vendor
+          operator: In
+          values:
+            - "OpenShift"
+    vendor: OpenShift
+policies:
+  - name: install-compliance-operator.
+    remediationAction: enforce 
+    manifests:
+      - path: manifests/
