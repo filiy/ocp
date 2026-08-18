@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
-  name: compliance-operator
+  name: node-maint-operator
 policyDefaults:
   namespace: acm-policies
   placement:
@@ -12,7 +12,7 @@ policyDefaults:
           values:
             - "OpenShift"
 policies:
-  - name: install-compliance-operator
+  - name: node-maint-operator
     remediationAction: enforce 
     manifests:
       - path: manifests/
