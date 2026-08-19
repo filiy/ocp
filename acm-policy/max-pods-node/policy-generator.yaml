@@ -1,0 +1,18 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: max-pods
+policyDefaults:
+  namespace: acm-policies
+  placement:
+    labelSelector:
+      matchExpressions:
+        - key: vendor
+          operator: In
+          values:
+            - "OpenShift"
+policies:
+  - name: max-pods
+    remediationAction: inform 
+    manifests:
+      - path: manifests/
