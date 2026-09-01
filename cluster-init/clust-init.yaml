@@ -7,7 +7,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3.14
     # Connection variables
-    ocp_host: "https://api.cluster-jr4vd.jr4vd.sandbox2106.opentlc.com:6443"
+    ocp_host: "https://api.cluster-pqz4n.pqz4n.sandbox538.opentlc.com:6443"
     ocp_username: "kubeadmin"
     ocp_password: ""
 
@@ -25,6 +25,10 @@
     # MachineSet Vars
     machineset_replicas: 1
     machineset_instance_type: m5zn.metal
+
+    # OpenShift GitOps Vars
+    gitops_namespace: openshift-gitops
+    gitops_operator_channel: latest
 
   module_defaults:
     group/k8s:
@@ -240,8 +244,64 @@
             feature_validation: 'true'
             feature_volume_populator: 'true'
 
+
     # =========================================================================
-    # 4. MODIFY MACHINESET
+    # 4. DEPLOY RED HAT OPENSHIFT GITOPS (ARGO CD)
+    # =========================================================================
+    - name: Create OpenShift GitOps Namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ gitops_namespace }}"
+
+    - name: Create OpenShift GitOps OperatorGroup
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: openshift-gitops-operatorgroup
+            namespace: "{{ gitops_namespace }}"
+          spec:
+            targetNamespaces:
+              - "{{ gitops_namespace }}"
+
+    - name: Create Subscription for OpenShift GitOps
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: openshift-gitops-operator
+            namespace: "{{ gitops_namespace }}"
+          spec:
+            channel: "{{ gitops_operator_channel }}"
+            installPlanApproval: Automatic
+            name: openshift-gitops-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+    - name: Wait for the OpenShift GitOps Operator CSV to succeed
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion
+        namespace: "{{ gitops_namespace }}"
+      register: csv_info_gitops
+      retries: 30
+      delay: 15
+      until: 
+        - csv_info_gitops.resources is defined
+        - csv_info_gitops.resources | length > 0
+        - csv_info_gitops.resources | selectattr('metadata.name', 'match', '^openshift-gitops-operator') | list | length > 0
+        - (csv_info_gitops.resources | selectattr('metadata.name', 'match', '^openshift-gitops-operator') | first).status.phase | default('') == 'Succeeded'
+
+    # =========================================================================
+    # 5. MODIFY MACHINESET
     # =========================================================================
     - name: Fetch existing MachineSet info
       kubernetes.core.k8s_info:

@@ -1,0 +1,3 @@
+- apply `placement.yaml`
+- 
+- 

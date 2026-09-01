@@ -1,4 +1,4 @@
-openshift-gitops-policygeneratorapiVersion: policy.open-cluster-management.io/v1
+apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: openshift-gitops-policygenerator
