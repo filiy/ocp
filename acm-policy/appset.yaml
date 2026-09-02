@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: acm-policies-appset
+  namespace: openshift-gitops
+spec:
+  generators:
+    - git:
+        # The base repository
+        repoURL: 'https://github.com/filiy/ocp.git'
+        revision: main
+        # This tells Argo CD to look for any subfolder directly under acm-policy/
+        directories:
+          - path: acm-policy/*
+  template:
+    metadata:
+      # Automatically names the Argo CD App based on the folder name
+      # e.g., "acm-policy-compliance-operator"
+      name: 'acm-policy-{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/filiy/ocp.git'
+        targetRevision: main
+        # Dynamically injects the specific folder path
+        path: '{{path}}'
+      destination:
+        # Deploys the generated Policies to the local Hub cluster
+        server: 'https://kubernetes.default.svc'
+        namespace: acm-policies

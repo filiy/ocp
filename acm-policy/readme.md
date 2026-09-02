@@ -1,3 +1,3 @@
 - apply `placement.yaml`
-- 
-- 
+- apply `openshift-gitops-policygenerator.yaml`
+- apply `appset.yaml`
