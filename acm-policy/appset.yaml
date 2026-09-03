@@ -28,3 +28,7 @@ spec:
         # Deploys the generated Policies to the local Hub cluster
         server: 'https://kubernetes.default.svc'
         namespace: acm-policies
+      syncPolicy:
+              automated:
+                prune: true
+                selfHeal: true
