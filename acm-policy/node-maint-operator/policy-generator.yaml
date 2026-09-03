@@ -13,6 +13,6 @@ policyDefaults:
             - "OpenShift"
 policies:
   - name: node-maint-operator
-    remediationAction: inform 
+    remediationAction: enforce 
     manifests:
       - path: manifests/
