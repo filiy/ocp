@@ -12,8 +12,6 @@ metadata:
   name: workload-availability-operatorgroup
   namespace: openshift-workload-availability
 spec:
-  targetNamespaces:
-    - openshift-workload-availability
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
